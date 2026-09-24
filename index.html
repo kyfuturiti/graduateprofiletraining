@@ -689,7 +689,7 @@ body{font-size:16.5px;line-height:1.68}
         <li>Progress saves as you go</li>
         <li>Certificate of completion</li>
       </ul>
-      <p class="gate-full" id="gateFull" hidden><a id="gateFullLink" href="#" target="_blank" rel="noopener">Open in a full window</a> for more room to work.</p>
+      <p class="gate-full" id="gateFull" hidden><a id="gateFullLink" href="#" target="_blank" rel="noopener">Open in a full window</a> for more room to work. Start there if you want the extra space, since your progress is saved separately in each place.</p>
     </div>
     <div class="gate-card">
       <h2>Before you begin</h2>
@@ -732,7 +732,6 @@ body{font-size:16.5px;line-height:1.68}
   <p class="topbar-title">Graduate Profile Gateway</p>
   <span class="topbar-spacer"></span>
   <span class="topbar-progress" id="progressText">0 of 11 complete</span>
-  <a class="btn btn-ghost btn-sm" id="fullLink" href="#" target="_blank" rel="noopener" hidden><span class="fl-long">Open full screen</span><span class="fl-short">Full screen</span></a>
 </header>
 
 <div class="shell" id="shell">
@@ -740,7 +739,7 @@ body{font-size:16.5px;line-height:1.68}
     <p class="sidenav-label">Sections</p>
     <ol class="nav-list" id="navList"></ol>
     <div class="sidenav-foot">
-      <p class="store-note" id="storeNote" hidden>Your progress can&rsquo;t be saved in this window. Use &ldquo;Open full screen&rdquo; to save your place.</p>
+      <p class="store-note" id="storeNote" hidden>This browser isn&rsquo;t saving your progress, so finish in one sitting if you can.</p>
       <button class="link-btn" data-reset type="button">Start over</button>
     </div>
   </nav>
@@ -1676,7 +1675,7 @@ body{font-size:16.5px;line-height:1.68}
       <button class="btn btn-primary" id="openCert" type="button">Open my certificate</button>
     </div>
   </div>
-  <p class="popup-note" id="popupNote" hidden role="alert">Your browser blocked the new window. Allow pop-ups for this page, or use &ldquo;Open full screen&rdquo; at the top and try again.</p>
+  <p class="popup-note" id="popupNote" hidden role="alert">Your browser blocked the new window. Allow pop-ups for this page, then try again.</p>
 </section>
 
   </main>
@@ -2223,6 +2222,7 @@ body{font-size:16.5px;line-height:1.68}
   cn.value = certName();
   cn.addEventListener("input", function(){ S.certName = cn.value; clearTimeout(cnTimer); cnTimer = setTimeout(function(){ save(); paintGen(); }, 350); });
   cn.addEventListener("blur", function(){ if (!cn.value.trim()){ S.certName = ""; cn.value = certName(); } save(); paintGen(); });
+  function fileName(base, who){ return base + "-" + (who || "").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); }
   function fmtDate(iso){ if (!iso) return ""; var d = /^\d{4}-\d{2}-\d{2}$/.test(iso) ? new Date(+iso.slice(0,4), +iso.slice(5,7) - 1, +iso.slice(8,10)) : new Date(iso); return isNaN(d) ? "" : d.toLocaleDateString("en-US", {year:"numeric", month:"long", day:"numeric"}); }
   function makeSerial(){
     var A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", out = "", r = new Uint8Array(6);
@@ -2264,7 +2264,7 @@ body{font-size:16.5px;line-height:1.68}
 
   /* ---------- new-window documents ---------- */
   var FONT = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,600&display=swap" rel="stylesheet">';
-  var READY = '<script>(function(){var b=document.getElementById("printBtn"),on=false;function en(){if(on)return;on=true;if(window.fitName)window.fitName();b.disabled=false;b.textContent="Print or save as PDF";}b.addEventListener("click",function(){window.print();});if(document.fonts&&document.fonts.ready){document.fonts.ready.then(en);}setTimeout(en,4000);})();<\/script>';
+  var READY = '<script>(function(){var b=document.getElementById("printBtn"),on=false;function en(){if(on)return;on=true;if(window.fitName)window.fitName();b.disabled=false;b.textContent="Save as PDF again";setTimeout(function(){try{window.focus();window.print();}catch(e){}},350);}b.addEventListener("click",function(){window.print();});if(document.fonts&&document.fonts.ready){document.fonts.ready.then(en);}setTimeout(en,4000);})();<\/script>';
   function openDoc(html){
     var w = window.open("", "_blank");
     if (!w){ $("#popupNote").hidden = false; return; }
@@ -2295,8 +2295,8 @@ body{font-size:16.5px;line-height:1.68}
       'table{border-collapse:collapse;width:100%}th,td{text-align:left;vertical-align:top;padding:6px 0;border-bottom:1px dashed #E1E6EE;font-size:10pt}th{width:44%;font-weight:600;color:#44506A;padding-right:14px}tr:last-child th,tr:last-child td{border-bottom:0}' +
       '.two{display:grid;grid-template-columns:1fr 1fr;gap:0 28px}.res a{color:#1B4595;font-weight:600}.foot{margin-top:16px;font-size:8.5pt;color:#667085;display:flex;justify-content:space-between;gap:12px}' +
       '@media print{html,body{background:#fff}.bar{display:none}.doc{width:auto;margin:0;padding:0;box-shadow:none}.gbar{position:static;height:6px;margin:0 0 14px}}@media (max-width:700px){.two{grid-template-columns:1fr}.doc{padding:.4in .3in}}';
-    return '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Graduate Profile Action Plan: ' + esc(fullName()) + '</title>' + FONT + '<style>' + css + '</style></head><body>' +
-      '<div class="bar"><button id="printBtn" type="button" disabled>Preparing\u2026</button><span>In the print window, choose &ldquo;Save as PDF&rdquo; to keep a copy.</span></div>' +
+    return '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>' + esc(fileName("Graduate-Profile-Action-Plan", fullName())) + '</title>' + FONT + '<style>' + css + '</style></head><body>' +
+      '<div class="bar"><button id="printBtn" type="button" disabled>Preparing\u2026</button><span>The save window opens on its own. Pick &ldquo;Save as PDF&rdquo; as the destination.</span></div>' +
       '<main class="doc"><div class="gbar"></div>' +
       '<header class="head"><div><p class="kind">Graduate Profile Gateway</p><h1>Action Plan</h1><p class="who"><strong>' + esc(fullName()) + '</strong>' + (who ? ", " + who : "") + '</p><p class="date">Created ' + fmtDate(new Date().toISOString()) + '</p></div><img src="' + logo + '" alt="Kentucky Council on Postsecondary Education"></header>' +
       '<section class="first"><h2>My first step</h2>' + T(S.refl.s11a) + '<p class="check"><strong>Check-in date:</strong> ' + (S.checkpoint ? fmtDate(S.checkpoint) : "Pick a date around mid-semester.") + '</p></section>' +
@@ -2330,8 +2330,8 @@ body{font-size:16.5px;line-height:1.68}
       '.serial{position:absolute;margin:0;right:.95in;bottom:.29in;font-size:8pt;letter-spacing:.12em;color:#8A94A8}.body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;padding-bottom:.1in}' +
       '@media print{html,body{background:#fff}.bar{display:none}.wrap{padding:0}.page{margin:0;box-shadow:none}}';
     var fit = '<script>window.fitName=function(){var n=document.querySelector(".name"),max=9.2*96,s=90;n.style.fontSize=s+"px";while(n.scrollWidth>max&&s>40){s-=2;n.style.fontSize=s+"px";}};<\/script>';
-    return '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Certificate of Completion: ' + esc(certName()) + '</title>' + FONT + '<style>' + css + '</style></head><body>' +
-      '<div class="bar"><button id="printBtn" type="button" disabled>Loading fonts\u2026</button><span>Print in landscape, then choose &ldquo;Save as PDF&rdquo; to keep a copy.</span></div>' +
+    return '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>' + esc(fileName("Graduate-Profile-Certificate", certName())) + '</title>' + FONT + '<style>' + css + '</style></head><body>' +
+      '<div class="bar"><button id="printBtn" type="button" disabled>Loading fonts\u2026</button><span>The save window opens on its own. Pick &ldquo;Save as PDF&rdquo; and landscape layout.</span></div>' +
       '<div class="wrap"><div class="page"><div class="g t"></div><div class="g b"></div>' +
       '<div class="frame"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span></div>' +
       '<div class="inner"><img class="logo" src="' + logo + '" alt="Kentucky Council on Postsecondary Education">' +
@@ -2378,7 +2378,6 @@ body{font-size:16.5px;line-height:1.68}
   var embedded = false;
   try { embedded = window.self !== window.top; } catch(e){ embedded = true; }
   if (embedded){
-    var fl = $("#fullLink"); fl.href = window.location.href; fl.hidden = false;
     $("#gateFullLink").href = window.location.href; $("#gateFull").hidden = false;
   }
 
