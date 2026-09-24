@@ -12,8 +12,14 @@
 
       <iframe src="HOSTED-URL/index.html"
               title="Graduate Profile Gateway training"
-              style="width:100%;height:88vh;min-height:720px;border:0;"
+              style="width:100%;height:88vh;min-height:760px;border:0;"
               allow="fullscreen; clipboard-write"></iframe>
+
+    HEIGHT MATTERS. The module scrolls inside the iframe, so the iframe itself must be
+    tall enough to work in: 88vh (about 760-900px on a laptop) is the target. If the CMS
+    only accepts a number, use 820. Anything under about 600 gets cramped. The layout
+    has a compact mode under 880px and again under 700px, so nothing is cut off, but a
+    taller frame is a better experience.
 
     Do not add a sandbox attribute. If one is required, include
     allow-scripts allow-same-origin allow-popups allow-modals allow-forms
@@ -70,6 +76,7 @@ a:hover{color:var(--mid)}
 .gate-intro{font-size:19px;color:var(--ink-soft);max-width:36em;margin:0 0 26px}
 .gate-facts{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
 .gate-facts li{font-family:var(--mono);font-size:13px;color:var(--navy);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+.gate-full{margin:16px 0 0;font-size:14.5px;color:var(--muted)}
 .gate-card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:clamp(24px,3vw,36px)}
 .gate-card h2{font-family:var(--serif);font-weight:400;font-size:34px;line-height:1.05;color:var(--navy);margin:0 0 6px}
 .gate-card > p{margin:0 0 20px;color:var(--ink-soft);font-size:15.5px}
@@ -90,6 +97,8 @@ a:hover{color:var(--mid)}
 .topbar-spacer{flex:1}
 .topbar-progress{font-family:var(--mono);font-size:12.5px;color:var(--muted);white-space:nowrap}
 .topbar .nav-toggle{display:none}
+.fl-short{display:none}
+#fullLink{white-space:nowrap}
 
 /* ---------- buttons ---------- */
 .btn{font:inherit;font-weight:600;font-size:15px;line-height:1;border-radius:999px;padding:13px 22px;cursor:pointer;border:1.5px solid transparent;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background-color .15s,border-color .15s,color .15s}
@@ -592,6 +601,39 @@ body{font-size:16.5px;line-height:1.68}
 .cert-name{margin-top:24px}
 @media (max-width:420px){ .field-row{grid-template-columns:minmax(0,1fr);gap:0} }
 
+/* ---------- short viewports (embedded in a fixed-height iframe) ---------- */
+@media (max-height:880px){
+  .gate-inner{align-items:start;padding:26px clamp(20px,5vw,60px) 30px;gap:clamp(22px,4vw,56px)}
+  .gate .logo{height:40px}
+  .gate-eyebrow{margin:16px 0 8px;font-size:12.5px}
+  .gate h1{font-size:clamp(30px,4.1vw,50px);margin-bottom:14px}
+  .gate h1 .grad{font-size:.52em;margin-top:.18em}
+  .gate-intro{font-size:16.5px;margin-bottom:16px}
+  .gate-facts li{font-size:12px;padding:4px 10px}
+  .gate-card{padding:20px 22px 22px;border-radius:18px}
+  .gate-card h2{font-size:23px}
+  .gate-card > p{font-size:14.5px;margin-bottom:14px}
+  .field{margin-bottom:12px}
+  .field label{font-size:13.5px;margin-bottom:4px}
+  .field input{height:44px;font-size:15.5px}
+  .field .help{font-size:12.5px;margin-top:4px}
+  .btn-block{padding:14px 20px;font-size:15.5px}
+  .gate-card > .gate-privacy{font-size:12.5px;margin-top:10px}
+  .main{padding-top:30px}
+  .sec-title{font-size:clamp(28px,3.4vw,40px);margin-bottom:18px}
+  .h3{margin-top:40px}
+}
+@media (max-height:700px){
+  .gate-inner{padding-top:20px}
+  .gate .logo{height:34px}
+  .gate-eyebrow{margin-top:12px}
+  .gate h1{font-size:clamp(26px,3.4vw,40px)}
+  .gate-intro{font-size:15.5px;line-height:1.5}
+  .gate-facts{display:none}
+  .field{margin-bottom:10px}
+  .field input{height:42px}
+}
+
 /* ---------- responsive ---------- */
 @media (max-width:980px){
   .shell{grid-template-columns:minmax(0,1fr)}
@@ -604,6 +646,10 @@ body{font-size:16.5px;line-height:1.68}
   .topbar{gap:10px;padding:0 12px}
   .topbar-title{font-size:15.5px}
   .topbar-progress{display:none}
+  .fl-long{display:none}
+  .fl-short{display:inline}
+  .topbar-title{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .topbar-spacer{flex:0 0 auto}
   .opts,.opts.three,.takeaways,.levels{grid-template-columns:minmax(0,1fr)}
   .shift{grid-template-columns:minmax(0,1fr)}
   .shift-arrow{height:40px}
@@ -616,6 +662,10 @@ body{font-size:16.5px;line-height:1.68}
   .fab .fab-label{display:none}
   .fab{padding:14px}
   .main{padding-top:30px}
+}
+@media (max-width:460px){
+  .topbar-title{display:none}
+  .topbar{gap:8px}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{transition:none!important;animation:none!important}
@@ -639,6 +689,7 @@ body{font-size:16.5px;line-height:1.68}
         <li>Progress saves as you go</li>
         <li>Certificate of completion</li>
       </ul>
+      <p class="gate-full" id="gateFull" hidden><a id="gateFullLink" href="#" target="_blank" rel="noopener">Open in a full window</a> for more room to work.</p>
     </div>
     <div class="gate-card">
       <h2>Before you begin</h2>
@@ -681,7 +732,7 @@ body{font-size:16.5px;line-height:1.68}
   <p class="topbar-title">Graduate Profile Gateway</p>
   <span class="topbar-spacer"></span>
   <span class="topbar-progress" id="progressText">0 of 11 complete</span>
-  <a class="btn btn-ghost btn-sm" id="fullLink" href="#" target="_blank" rel="noopener" hidden>Open full screen</a>
+  <a class="btn btn-ghost btn-sm" id="fullLink" href="#" target="_blank" rel="noopener" hidden><span class="fl-long">Open full screen</span><span class="fl-short">Full screen</span></a>
 </header>
 
 <div class="shell" id="shell">
@@ -2326,7 +2377,10 @@ body{font-size:16.5px;line-height:1.68}
   /* ---------- embedded in an iframe? ---------- */
   var embedded = false;
   try { embedded = window.self !== window.top; } catch(e){ embedded = true; }
-  if (embedded){ var fl = $("#fullLink"); fl.href = window.location.href; fl.hidden = false; }
+  if (embedded){
+    var fl = $("#fullLink"); fl.href = window.location.href; fl.hidden = false;
+    $("#gateFullLink").href = window.location.href; $("#gateFull").hidden = false;
+  }
 
   /* storage check */
   try { window.localStorage.setItem(KEY + "-t", "1"); window.localStorage.removeItem(KEY + "-t"); } catch(e){ storageOK = false; }
